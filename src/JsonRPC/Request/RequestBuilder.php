@@ -114,16 +114,27 @@ class RequestBuilder
      */
     public function build()
     {
-        $payload = array_merge_recursive($this->reqattrs, array(
+        $encodedRequest = json_encode($this->buildRequest());
+        return $encodedRequest;
+    }
+
+    /**
+     * Build request payload
+     *
+     * @access protected
+     * @return array
+     */
+    protected function buildRequest()
+    {
+        $request = array_merge_recursive($this->reqattrs, array(
             'jsonrpc' => '2.0',
             'method' => $this->procedure,
             'id' => $this->id ?: mt_rand(),
         ));
 
         if (! empty($this->params)) {
-            $payload['params'] = $this->params;
+            $request['params'] = $this->params;
         }
-
-        return json_encode($payload);
+        return $request;
     }
 }

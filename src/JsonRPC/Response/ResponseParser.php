@@ -21,10 +21,10 @@ class ResponseParser
     /**
      * Payload
      *
-     * @access private
+     * @access protected
      * @var mixed
      */
-    private $payload;
+    protected $payload;
 
     /**
      * Do not immediately throw an exception on error. Return it instead.
@@ -66,6 +66,8 @@ class ResponseParser
      */
     public function withPayload($payload)
     {
+        JsonFormatValidator::validate($payload);
+        
         $this->payload = $payload;
         return $this;
     }
@@ -83,8 +85,6 @@ class ResponseParser
      */
     public function parse()
     {
-        JsonFormatValidator::validate($this->payload);
-
         if ($this->isBatchResponse()) {
             $results = array();
 

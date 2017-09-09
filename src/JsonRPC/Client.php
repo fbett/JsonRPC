@@ -56,17 +56,37 @@ class Client
     private $httpClient;
 
     /**
+     * Request builder
+     *
+     * @access protected
+     * @var RequestBuilder
+     */
+    protected $requestBuilder;
+
+    /**
+     * Response parser
+     *
+     * @access protected
+     * @var ResponseParser
+     */
+    protected $responseParser;
+
+    /**
      * Constructor
      *
      * @access public
      * @param  string      $url               Server URL
      * @param  bool        $returnException   Return exceptions
      * @param  HttpClient  $httpClient        HTTP client object
+     * @param  RequestBuilder     $requestBuilder
      */
-    public function __construct($url = '', $returnException = false, HttpClient $httpClient = null)
+    public function __construct($url = '', $returnException = false, HttpClient $httpClient = null, RequestBuilder $requestBuilder = null, ResponseParser $responseParser = null)
     {
         $this->httpClient = $httpClient ?: new HttpClient($url);
         $this->returnException = $returnException;
+        
+        $this->requestBuilder = $requestBuilder ?: RequestBuilder::create();
+        $this->responseParser = $responseParser ?: ResponseParser::create();
     }
 
     /**
@@ -163,7 +183,7 @@ class Client
      */
     public function execute($procedure, array $params = array(), array $reqattrs = array(), $requestId = null)
     {
-        $payload = RequestBuilder::create()
+        $payload = $this->requestBuilder
             ->withProcedure($procedure)
             ->withParams($params)
             ->withRequestAttributes($reqattrs)
@@ -186,9 +206,9 @@ class Client
      * @param  string $payload
      * @return Exception|Client
      */
-    private function sendPayload($payload)
+    protected function sendPayload($payload)
     {
-        return ResponseParser::create()
+        return $this->responseParser
             ->withReturnException($this->returnException)
             ->withPayload($this->httpClient->execute($payload))
             ->parse();

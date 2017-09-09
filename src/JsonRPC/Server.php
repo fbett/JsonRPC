@@ -143,6 +143,8 @@ class Server
             $this->payload = json_decode(file_get_contents('php://input'), true);
         }
 
+        JsonFormatValidator::validate($this->payload);
+
         $this->serverVariable = $server ?: $_SERVER;
         $this->responseBuilder = $responseBuilder ?: ResponseBuilder::create();
         $this->requestParser = $requestParser ?: RequestParser::create();
@@ -309,7 +311,6 @@ class Server
     public function execute()
     {
         try {
-            JsonFormatValidator::validate($this->payload);
             HostValidator::validate($this->hosts, $this->getServerVariable('REMOTE_ADDR'));
             UserValidator::validate($this->users, $this->getUsername(), $this->getPassword());
 
