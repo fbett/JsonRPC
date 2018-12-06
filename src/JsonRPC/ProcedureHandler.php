@@ -129,7 +129,7 @@ class ProcedureHandler
             }
         }
 
-        throw new BadFunctionCallException('Unable to find the procedure');
+        throw new BadFunctionCallException('Unable to find the procedure:');
     }
 
     /**
