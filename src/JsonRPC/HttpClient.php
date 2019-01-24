@@ -29,7 +29,7 @@ class HttpClient
      * @access private
      * @var integer
      */
-    private $timeout = 5;
+    private $timeout = 30;
 
     /**
      * Default HTTP headers to send to the server
